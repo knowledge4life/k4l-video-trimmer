@@ -276,6 +276,9 @@ public class K4LVideoTrimmer extends FrameLayout {
                 }
             }
 
+            //notify that video trimming started
+            mOnTrimVideoListener.onTrimStarted();
+
             BackgroundExecutor.execute(
                     new BackgroundExecutor.Task("", 0L, "") {
                         @Override
