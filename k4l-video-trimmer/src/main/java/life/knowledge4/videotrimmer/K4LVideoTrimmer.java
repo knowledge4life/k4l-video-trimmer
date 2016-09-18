@@ -380,19 +380,6 @@ public class K4LVideoTrimmer extends FrameLayout {
             //notify that video trimming started
             if (mOnTrimVideoListener != null)
                 mOnTrimVideoListener.onTrimStarted();
-
-//            BackgroundExecutor.execute(
-//                    new BackgroundExecutor.Task("", 0L, "") {
-//                        @Override
-//                        public void execute() {
-//                            try {
-//                                TrimVideoUtils.startTrim(file, getDestinationPath(), mStartPosition, mEndPosition, mOnTrimVideoListener);
-//                            } catch (final Throwable e) {
-//                                Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
-//                            }
-//                        }
-//                    }
-//            );
         }
     }
 
