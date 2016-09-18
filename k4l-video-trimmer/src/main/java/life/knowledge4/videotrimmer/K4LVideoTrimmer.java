@@ -27,6 +27,7 @@ import android.content.Context;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
@@ -45,6 +46,12 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
+import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
+import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler;
+import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
+import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
+
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -55,7 +62,7 @@ import life.knowledge4.videotrimmer.interfaces.OnProgressVideoListener;
 import life.knowledge4.videotrimmer.interfaces.OnRangeSeekBarListener;
 import life.knowledge4.videotrimmer.interfaces.OnTrimVideoListener;
 import life.knowledge4.videotrimmer.utils.BackgroundExecutor;
-import life.knowledge4.videotrimmer.utils.TrimVideoUtils;
+import life.knowledge4.videotrimmer.utils.RealPathUtil;
 import life.knowledge4.videotrimmer.utils.UiThreadExecutor;
 import life.knowledge4.videotrimmer.view.ProgressBarView;
 import life.knowledge4.videotrimmer.view.RangeSeekBarView;
@@ -96,6 +103,8 @@ public class K4LVideoTrimmer extends FrameLayout {
     private int mStartPosition = 0;
     private int mEndPosition = 0;
 
+    private ViewGroup loading;
+
     private long mOriginSizeFile;
     private boolean mResetSeekBar = true;
     private final MessageHandler mMessageHandler = new MessageHandler(this);
@@ -123,6 +132,42 @@ public class K4LVideoTrimmer extends FrameLayout {
         mTextTimeFrame = ((TextView) findViewById(R.id.textTimeSelection));
         mTextTime = ((TextView) findViewById(R.id.textTime));
         mTimeLineView = ((TimeLineView) findViewById(R.id.timeLineView));
+
+        loading = (ViewGroup) findViewById(R.id.progress);
+        loading.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        loading.setVisibility(GONE);
+        FFmpeg fFmpeg = FFmpeg.getInstance(getContext());
+        try {
+            fFmpeg.loadBinary(new LoadBinaryResponseHandler(){
+                @Override
+                public void onStart() {
+                    Log.d(TAG, "onStart: ");
+                }
+
+                @Override
+                public void onFailure() {
+                    Log.d(TAG, "onFailure: ");
+                }
+
+                @Override
+                public void onSuccess() {
+                    Log.d(TAG, "onSuccess: ");
+                }
+
+                @Override
+                public void onFinish() {
+                    Log.d(TAG, "onFinish: ");
+                }
+            });
+        } catch (FFmpegNotSupportedException e) {
+            e.printStackTrace();
+        }
 
         setUpListeners();
         setUpMargins();
@@ -281,23 +326,89 @@ public class K4LVideoTrimmer extends FrameLayout {
                 }
             }
 
+            Log.d(TAG, "onSaveClicked: mStartPosition: "+stringForTime(mStartPosition)+ " #### mEndPosition: "+stringForTime(mEndPosition));
+
+            final File root = new File(Environment.getExternalStorageDirectory() + File.separator + "k4lVideoTrimmer" + File.separator);
+            root.mkdirs();
+            final String fname = "t_"+mSrc.getPath().substring(mSrc.getPath().lastIndexOf("/") + 1);
+            final File sdImageMainDirectory = new File(root, fname);
+            final Uri outputFileUri = Uri.fromFile(sdImageMainDirectory);
+
+            final String outPutPath = getRealPathFromUri(outputFileUri);
+
+            FFmpeg ffmpeg = FFmpeg.getInstance(getContext());
+            String[] command = {"-y",  "-i", file.getPath(), "-ss", stringForTime(mStartPosition), "-to", stringForTime(mEndPosition), "-c", "copy", outPutPath};//{"-y", "-ss", "00:00:03", "-i", file.getPath(), "-t", "00:00:08", "-async", "1", outPutPath};  //-i movie.mp4 -ss 00:00:03 -t 00:00:08 -async 1 cut.mp4
+            try {
+                ffmpeg.execute(command, new ExecuteBinaryResponseHandler(){
+                    @Override
+                    public void onSuccess(String message) {
+                        super.onSuccess(message);
+                        Log.d(TAG, "onSuccess: "+message);
+                    }
+
+                    @Override
+                    public void onProgress(String message) {
+                        super.onProgress(message);
+                        Log.d(TAG, "onProgress: "+message);
+                    }
+
+                    @Override
+                    public void onFailure(String message) {
+                        super.onFailure(message);
+                        loading.setVisibility(GONE);
+                        Log.d(TAG, "onFailure: "+message);
+                    }
+
+                    @Override
+                    public void onStart() {
+                        super.onStart();
+                        Log.d(TAG, "onStart: ");
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        super.onFinish();
+                        loading.setVisibility(GONE);
+                        mOnTrimVideoListener.getResult(outputFileUri);
+                        Log.d(TAG, "onFinish: ");
+                    }
+                });
+            } catch (FFmpegCommandAlreadyRunningException e) {
+
+            }
+
             //notify that video trimming started
             if (mOnTrimVideoListener != null)
                 mOnTrimVideoListener.onTrimStarted();
 
-            BackgroundExecutor.execute(
-                    new BackgroundExecutor.Task("", 0L, "") {
-                        @Override
-                        public void execute() {
-                            try {
-                                TrimVideoUtils.startTrim(file, getDestinationPath(), mStartPosition, mEndPosition, mOnTrimVideoListener);
-                            } catch (final Throwable e) {
-                                Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
-                            }
-                        }
-                    }
-            );
+//            BackgroundExecutor.execute(
+//                    new BackgroundExecutor.Task("", 0L, "") {
+//                        @Override
+//                        public void execute() {
+//                            try {
+//                                TrimVideoUtils.startTrim(file, getDestinationPath(), mStartPosition, mEndPosition, mOnTrimVideoListener);
+//                            } catch (final Throwable e) {
+//                                Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
+//                            }
+//                        }
+//                    }
+//            );
         }
+    }
+
+    private String getRealPathFromUri(Uri videoUri) {
+        String realPath;// SDK < API11
+        if (Build.VERSION.SDK_INT < 11)
+            realPath = RealPathUtil.getRealPathFromURI_BelowAPI11(getContext(), videoUri);
+
+            // SDK >= 11 && SDK < 19
+        else if (Build.VERSION.SDK_INT < 19)
+            realPath = RealPathUtil.getRealPathFromURI_API11to18(getContext(), videoUri);
+
+            // SDK > 19 (Android 4.4)
+        else
+            realPath = RealPathUtil.getRealPathFromURI_API19(getContext(), videoUri);
+        return realPath;
     }
 
     private void onClickVideoPlayPause() {
