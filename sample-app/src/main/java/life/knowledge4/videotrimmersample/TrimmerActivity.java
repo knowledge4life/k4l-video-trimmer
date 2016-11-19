@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import life.knowledge4.videotrimmer.K4LVideoTrimmer;
@@ -20,6 +22,11 @@ public class TrimmerActivity extends AppCompatActivity implements OnTrimVideoLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trimmer);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         Intent extraIntent = getIntent();
         String path = "";

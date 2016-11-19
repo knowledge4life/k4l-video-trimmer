@@ -1,5 +1,59 @@
-<life.knowledge4.videotrimmer.K4LVideoTrimmer xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/timeLine"
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".TrimmerActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            app:theme="@style/AppTheme.AppBarOverlay">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/white"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+                <TextView
+                    android:id="@+id/header"
+                    android:layout_margin="@dimen/activity_horizontal_margin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/trim_video_activity_title"
+                    android:gravity="center"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/colorPrimary" />
+            </android.support.v7.widget.Toolbar>
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/colorPrimary" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <life.knowledge4.videotrimmer.K4LVideoTrimmer
+            android:id="@+id/timeLine"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>
 
