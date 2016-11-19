@@ -20,7 +20,10 @@
         </activity>
 
         <activity
-            android:name=".TrimmerActivity" />
+            android:name=".TrimmerActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
     </application>
 
 </manifest>

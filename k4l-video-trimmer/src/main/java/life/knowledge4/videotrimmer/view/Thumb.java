@@ -52,6 +52,13 @@ public class Thumb {
         mPos = 0;
     }
 
+    Thumb(int index,Bitmap bitmap) {
+        mVal = 0;
+        mPos = 0;
+        setIndex(index);
+        setBitmap(bitmap);
+    }
+
     public int getIndex() {
         return mIndex;
     }
@@ -90,21 +97,8 @@ public class Thumb {
     public static List<Thumb> initThumbs(Resources resources) {
 
         List<Thumb> thumbs = new Vector<>();
-
-        for (int i = 0; i < 2; i++) {
-            Thumb th = new Thumb();
-            th.setIndex(i);
-            if (i == 0) {
-                int resImageLeft = R.drawable.apptheme_text_select_handle_left;
-                th.setBitmap(BitmapFactory.decodeResource(resources, resImageLeft));
-            } else {
-                int resImageRight = R.drawable.apptheme_text_select_handle_right;
-                th.setBitmap(BitmapFactory.decodeResource(resources, resImageRight));
-            }
-
-            thumbs.add(th);
-        }
-
+        thumbs.add(new Thumb(0,BitmapFactory.decodeResource(resources, R.drawable.fastscroll_thumb_pressed_holo)));
+        thumbs.add(new Thumb(1,BitmapFactory.decodeResource(resources, R.drawable.fastscroll_thumb_pressed_holo)));
         return thumbs;
     }
 
