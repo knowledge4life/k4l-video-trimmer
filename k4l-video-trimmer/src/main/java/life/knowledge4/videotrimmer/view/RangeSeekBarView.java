@@ -334,9 +334,11 @@ public class RangeSeekBarView extends View {
         if (!mThumbs.isEmpty()) {
             for (Thumb th : mThumbs) {
                 if (th.getIndex() == 0) {
-                    canvas.drawBitmap(th.getBitmap(), th.getPos() + getPaddingLeft(), getPaddingTop() + mHeightTimeLine, null);
+                    canvas.drawBitmap(th.getBitmap(), th.getPos() + getPaddingLeft() + mThumbWidth/2, getPaddingTop()-mThumbWidth/2, null);
+                    canvas.drawBitmap(th.getBitmap(), th.getPos() + getPaddingLeft() + mThumbWidth/2, getPaddingTop(), null);
                 } else {
-                    canvas.drawBitmap(th.getBitmap(), th.getPos() - getPaddingRight(), getPaddingTop() + mHeightTimeLine, null);
+                    canvas.drawBitmap(th.getBitmap(), th.getPos() - getPaddingRight() - mThumbWidth/2, getPaddingTop()-mThumbWidth/2, null);
+                    canvas.drawBitmap(th.getBitmap(), th.getPos() - getPaddingRight() - mThumbWidth/2, getPaddingTop(), null);
                 }
             }
         }
