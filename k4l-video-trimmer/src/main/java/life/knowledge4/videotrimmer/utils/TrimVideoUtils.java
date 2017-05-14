@@ -43,6 +43,7 @@ import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Formatter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -53,7 +54,6 @@ public class TrimVideoUtils {
 
     private static final String TAG = TrimVideoUtils.class.getSimpleName();
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void startTrim(@NonNull File src, @NonNull String dst, long startMs, long endMs, @NonNull OnTrimVideoListener callback) throws IOException {
         final String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
         final String fileName = "MP4_" + timeStamp + ".mp4";
@@ -65,7 +65,6 @@ public class TrimVideoUtils {
         genVideoUsingMp4Parser(src, file, startMs, endMs, callback);
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static void genVideoUsingMp4Parser(@NonNull File src, @NonNull File dst, long startMs, long endMs, @NonNull OnTrimVideoListener callback) throws IOException {
         // NOTE: Switched to using FileDataSourceViaHeapImpl since it does not use memory mapping (VM).
         // Otherwise we get OOM with large movie files.
@@ -138,7 +137,8 @@ public class TrimVideoUtils {
 
         fc.close();
         fos.close();
-        callback.getResult(Uri.parse(dst.toString()));
+        if (callback != null)
+            callback.getResult(Uri.parse(dst.toString()));
     }
 
     private static double correctTimeToSyncSample(@NonNull Track track, double cutHere, boolean next) {
@@ -168,5 +168,20 @@ public class TrimVideoUtils {
             previous = timeOfSyncSample;
         }
         return timeOfSyncSamples[timeOfSyncSamples.length - 1];
+    }
+
+    public static String stringForTime(int timeMs) {
+        int totalSeconds = timeMs / 1000;
+
+        int seconds = totalSeconds % 60;
+        int minutes = (totalSeconds / 60) % 60;
+        int hours = totalSeconds / 3600;
+
+        Formatter mFormatter = new Formatter();
+        if (hours > 0) {
+            return mFormatter.format("%d:%02d:%02d", hours, minutes, seconds).toString();
+        } else {
+            return mFormatter.format("%02d:%02d", minutes, seconds).toString();
+        }
     }
 }

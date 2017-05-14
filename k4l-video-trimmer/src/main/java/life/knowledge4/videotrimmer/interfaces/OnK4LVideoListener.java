@@ -23,15 +23,7 @@
  */
 package life.knowledge4.videotrimmer.interfaces;
 
-import android.net.Uri;
+public interface OnK4LVideoListener {
 
-public interface OnTrimVideoListener {
-
-    void onTrimStarted();
-
-    void getResult(final Uri uri);
-
-    void cancelAction();
-
-    void onError(final String message);
+    void onVideoPrepared();
 }
