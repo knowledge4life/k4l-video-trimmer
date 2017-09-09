@@ -91,8 +91,8 @@ public class TrimVideoUtils {
 
                     throw new RuntimeException("The startTime has already been corrected by another track with SyncSample. Not Supported.");
                 }
-                startTime1 = correctTimeToSyncSample(track, startTime1, false);
-                endTime1 = correctTimeToSyncSample(track, endTime1, true);
+//                 startTime1 = correctTimeToSyncSample(track, startTime1, false);
+//                 endTime1 = correctTimeToSyncSample(track, endTime1, true);
                 timeCorrected = true;
             }
         }
