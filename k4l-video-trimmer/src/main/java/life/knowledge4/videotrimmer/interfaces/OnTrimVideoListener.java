@@ -35,5 +35,6 @@ public interface OnTrimVideoListener {
 
     void onError(final String message);
     
-    void onTrimChosen(int startTime, int endTime);
+    // return true to continue trimming or false to cancel trimming
+    boolean onTrimChosen(int startTime, int endTime);
 }
