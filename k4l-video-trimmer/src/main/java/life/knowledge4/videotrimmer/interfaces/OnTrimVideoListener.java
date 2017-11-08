@@ -34,4 +34,6 @@ public interface OnTrimVideoListener {
     void cancelAction();
 
     void onError(final String message);
+    
+    void onTrimChosen(int startTime, int endTime);
 }
