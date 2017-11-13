@@ -48,6 +48,11 @@ public class TrimmerActivity extends AppCompatActivity implements OnTrimVideoLis
     public void onTrimStarted() {
         mProgressDialog.show();
     }
+    
+    @Override
+    public void onTrimChosen(int from, int to) {
+        
+    }
 
     @Override
     public void getResult(final Uri uri) {
