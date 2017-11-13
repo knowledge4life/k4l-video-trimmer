@@ -260,8 +260,10 @@ public class K4LVideoTrimmer extends FrameLayout {
 
     private void onSaveClicked() {
         if (mStartPosition <= 0 && mEndPosition >= mDuration) {
-            if (mOnTrimVideoListener != null)
+            if (mOnTrimVideoListener != null) {
+                mOnTrimVideoListener.onTrimChosen(0, mDuration);
                 mOnTrimVideoListener.getResult(mSrc);
+            }
         } else {
             mPlayView.setVisibility(View.VISIBLE);
             mVideoView.pause();
@@ -282,9 +284,13 @@ public class K4LVideoTrimmer extends FrameLayout {
             }
 
             //notify that video trimming started
-            if (mOnTrimVideoListener != null)
+            boolean shouldTrim = true;
+            if (mOnTrimVideoListener != null) {
                 mOnTrimVideoListener.onTrimStarted();
-
+                shouldTrim = mOnTrimVideoListener.onTrimChosen(mStartPosition, mEndPosition);
+            }
+            if (!shouldTrim)
+                return; 
             BackgroundExecutor.execute(
                     new BackgroundExecutor.Task("", 0L, "") {
                         @Override
