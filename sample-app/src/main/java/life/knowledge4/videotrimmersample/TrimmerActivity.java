@@ -51,7 +51,7 @@ public class TrimmerActivity extends AppCompatActivity implements OnTrimVideoLis
     
     @Override
     public boolean onTrimChosen(int from, int to) {
-        
+        return true;
     }
 
     @Override
