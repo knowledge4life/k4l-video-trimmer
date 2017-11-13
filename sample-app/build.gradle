@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "23.0.3"
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "life.knowledge4.videocroppersample"
         minSdkVersion 16
-        targetSdkVersion 24
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -26,13 +26,14 @@ repositories{
     maven {
         url = 'https://oss.sonatype.org/content/repositories/snapshots/'
     }
+    google()
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     //compile 'life.knowledge4:k4l-video-trimmer:0.1-SNAPSHOT'
     compile project(':k4l-video-trimmer')
-    compile 'com.android.support:appcompat-v7:24.0.0'
+    compile 'com.android.support:appcompat-v7:26.1.0'
     testCompile 'junit:junit:4.12'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
     androidTestCompile 'com.android.support.test:runner:0.5'
