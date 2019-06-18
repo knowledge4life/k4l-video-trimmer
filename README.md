@@ -39,11 +39,13 @@
 
 # Default destination folder
 
-    Directory: Movies
-    Album: "k4l-video-trimmer"
-    
-    ```java
-    File folder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES), "k4l-video-trimmer");
+* Directory: Movies 
+* Album: "k4l-video-trimmer"
+  
+    ``` java
+      File folder = new
+      File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES),
+      "k4l-video-trimmer");
     ```
     
 # Here is an example of a listener implementation.
