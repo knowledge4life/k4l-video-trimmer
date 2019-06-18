@@ -24,8 +24,9 @@
 package life.knowledge4.videotrimmer.utils;
 
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.coremedia.iso.boxes.Container;
 import com.googlecode.mp4parser.FileDataSourceViaHeapImpl;
@@ -123,7 +124,7 @@ public class TrimVideoUtils {
             movie.addTrack(new AppendTrack(new CroppedTrack(track, startSample1, endSample1)));
         }
 
-        dst.getParentFile().mkdirs();
+//        dst.getParentFile().mkdirs();
 
         if (!dst.exists()) {
             dst.createNewFile();

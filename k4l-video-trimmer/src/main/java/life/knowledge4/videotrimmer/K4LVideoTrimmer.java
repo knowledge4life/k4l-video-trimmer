@@ -30,7 +30,6 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -44,6 +43,8 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.VideoView;
+
+import androidx.annotation.NonNull;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -327,7 +328,11 @@ public class K4LVideoTrimmer extends FrameLayout {
 
     private String getDestinationPath() {
         if (mFinalPath == null) {
-            File folder = Environment.getExternalStorageDirectory();
+            File folder = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_MOVIES), "k4l-video-trimmer");
+            if (!folder.mkdirs()) {
+                Log.e(TAG, "Directory not created");
+            }
             mFinalPath = folder.getPath() + File.separator;
             Log.d(TAG, "Using default path " + mFinalPath);
         }
