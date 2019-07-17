@@ -30,7 +30,7 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/layout"
+        android:id="@+id/trimmer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/layout_surface_view"
@@ -77,7 +77,7 @@
         android:id="@+id/timeText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/layout"
+        android:layout_alignTop="@+id/trimmer"
         android:visibility="gone">
 
         <TextView

@@ -24,10 +24,11 @@
 package life.knowledge4.videotrimmer;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Environment;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -50,6 +51,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import life.knowledge4.videotrimmer.interfaces.OnK4LVideoListener;
@@ -102,6 +104,10 @@ public class K4LVideoTrimmer extends FrameLayout {
     private boolean mResetSeekBar = true;
     private final MessageHandler mMessageHandler = new MessageHandler(this);
 
+    //handle gesture exclusion rect
+    private Rect boundingBox = new Rect();
+    private List<Rect> exclusions = new ArrayList<>(Collections.singletonList(boundingBox));
+
     public K4LVideoTrimmer(@NonNull Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
@@ -128,6 +134,17 @@ public class K4LVideoTrimmer extends FrameLayout {
 
         setUpListeners();
         setUpMargins();
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        if (changed) {
+            findViewById(R.id.trimmer).getGlobalVisibleRect(boundingBox);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                setSystemGestureExclusionRects(exclusions);
+            }
+        }
     }
 
     private void setUpListeners() {
