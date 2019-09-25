@@ -1,5 +1,21 @@
-<life.knowledge4.videotrimmer.K4LVideoTrimmer xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/timeLine"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
+
+    <life.knowledge4.videotrimmer.K4LVideoTrimmer
+        android:id="@+id/timeLine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </life.knowledge4.videotrimmer.K4LVideoTrimmer>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="save"
+        android:text="Save" />
+
+</LinearLayout>
