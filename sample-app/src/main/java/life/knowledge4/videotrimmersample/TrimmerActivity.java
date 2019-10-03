@@ -4,8 +4,14 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.os.Environment;
+import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.io.File;
 
 import life.knowledge4.videotrimmer.K4LVideoTrimmer;
 import life.knowledge4.videotrimmer.interfaces.OnK4LVideoListener;
@@ -35,13 +41,22 @@ public class TrimmerActivity extends AppCompatActivity implements OnTrimVideoLis
 
         mVideoTrimmer = ((K4LVideoTrimmer) findViewById(R.id.timeLine));
         if (mVideoTrimmer != null) {
-            mVideoTrimmer.setMaxDuration(10);
+            mVideoTrimmer.setMaxDuration(30);
             mVideoTrimmer.setOnTrimVideoListener(this);
             mVideoTrimmer.setOnK4LVideoListener(this);
-            //mVideoTrimmer.setDestinationPath("/storage/emulated/0/DCIM/CameraCustom/");
+            mVideoTrimmer.setDestinationPath(getDestinationPath());
             mVideoTrimmer.setVideoURI(Uri.parse(path));
-            mVideoTrimmer.setVideoInformationVisibility(true);
+            mVideoTrimmer.setVideoInformationVisibility(false);
         }
+    }
+
+    private String getDestinationPath() {
+        File folder = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_MOVIES), "k4l-video-trimmer");
+        if (!folder.mkdirs()) {
+            Log.e("TrimmerActivity", "Directory not created");
+        }
+        return folder.getPath() + File.separator;
     }
 
     @Override
@@ -66,22 +81,26 @@ public class TrimmerActivity extends AppCompatActivity implements OnTrimVideoLis
     }
 
     @Override
-    public void cancelAction() {
-        mProgressDialog.cancel();
-        mVideoTrimmer.destroy();
-        finish();
-    }
-
-    @Override
-    public void onError(final String message) {
+    public void onError(final Throwable throwable) {
         mProgressDialog.cancel();
 
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(TrimmerActivity.this, message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(TrimmerActivity.this, throwable.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mProgressDialog.cancel();
+        mVideoTrimmer.releaseTrimmer();
+    }
+
+    public void save(View view) {
+        mVideoTrimmer.save();
     }
 
     @Override

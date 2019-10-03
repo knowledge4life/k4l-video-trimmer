@@ -1,40 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/layout_surface_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/layout"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:background="@android:color/black"
-        android:gravity="center"
+        android:gravity="top"
         android:orientation="vertical">
 
         <VideoView
             android:id="@+id/video_loader"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"/>
+            android:layout_height="320dp"
+            android:layout_centerHorizontal="true" />
 
         <ImageView
             android:id="@+id/icon_video_play"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/play_button"/>
+            android:background="@drawable/play_button" />
 
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/layout"
+        android:id="@+id/trimmer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@id/layout_surface_view"
         android:background="@color/background_video_color">
 
         <SeekBar
@@ -45,65 +44,32 @@
             android:max="1000"
             android:progressDrawable="@android:color/transparent"
             android:secondaryProgress="0"
-            android:thumb="@drawable/apptheme_text_select_handle_middle"/>
+            android:thumb="@drawable/apptheme_text_select_handle_middle" />
 
         <life.knowledge4.videotrimmer.view.ProgressBarView
             android:id="@+id/timeVideoView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/handlerTop"/>
+            android:layout_below="@+id/handlerTop" />
 
         <life.knowledge4.videotrimmer.view.TimeLineView
             android:id="@+id/timeLineView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/timeVideoView"/>
+            android:layout_below="@+id/timeVideoView" />
 
         <life.knowledge4.videotrimmer.view.RangeSeekBarView
             android:id="@+id/timeLineBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/timeLineView"/>
+            android:layout_alignTop="@+id/timeLineView" />
 
         <View
             android:id="@+id/lineTop"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/timeLineBar"
-            android:background="@color/line_button"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/lineTop"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/btCancel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/black_button_background"
-                android:text="@string/cancel"
-                android:textColor="@android:color/white"/>
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/line_button"/>
-
-            <Button
-                android:id="@+id/btSave"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/black_button_background"
-                android:text="@string/save"
-                android:textColor="@android:color/white"/>
-
-        </LinearLayout>
+            android:background="@color/line_button" />
 
     </RelativeLayout>
 
@@ -111,27 +77,27 @@
         android:id="@+id/timeText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/layout"
+        android:layout_alignTop="@+id/trimmer"
         android:visibility="gone">
 
         <TextView
             android:id="@+id/textSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:textColor="@android:color/white"/>
+            android:layout_alignParentLeft="true"
+            android:textColor="@android:color/white" />
 
         <TextView
             android:id="@+id/textTimeSelection"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/textSize"
-            android:layout_toLeftOf="@+id/textTime"
-            android:layout_toRightOf="@+id/textSize"
             android:layout_toStartOf="@+id/textTime"
+            android:layout_toLeftOf="@+id/textTime"
+            android:layout_toEndOf="@+id/textSize"
+            android:layout_toRightOf="@+id/textSize"
             android:gravity="center"
-            android:textColor="@android:color/white"/>
+            android:textColor="@android:color/white" />
 
         <TextView
             android:id="@+id/textTime"
@@ -139,7 +105,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:textColor="@android:color/white"/>
+            android:textColor="@android:color/white" />
 
     </RelativeLayout>
 

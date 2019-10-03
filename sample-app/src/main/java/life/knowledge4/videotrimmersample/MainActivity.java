@@ -7,10 +7,12 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -55,7 +57,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void pickFromGallery() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE, getString(R.string.permission_read_storage_rationale), REQUEST_STORAGE_READ_ACCESS_PERMISSION);
         } else {
             Intent intent = new Intent();
@@ -91,21 +94,21 @@ public class MainActivity extends AppCompatActivity {
      * If the permission has been denied previously, a Dialog will prompt the user to grant the
      * permission, otherwise it is requested directly.
      */
-    private void requestPermission(final String permission, String rationale, final int requestCode) {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+    private void requestPermission(final String readPermission, String rationale, final int requestCode) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, readPermission)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(getString(R.string.permission_title_rationale));
             builder.setMessage(rationale);
             builder.setPositiveButton(getString(R.string.label_ok), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{permission}, requestCode);
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{readPermission, Manifest.permission.WRITE_EXTERNAL_STORAGE}, requestCode);
                 }
             });
             builder.setNegativeButton(getString(R.string.label_cancel), null);
             builder.show();
         } else {
-            ActivityCompat.requestPermissions(this, new String[]{permission}, requestCode);
+            ActivityCompat.requestPermissions(this, new String[]{readPermission, Manifest.permission.WRITE_EXTERNAL_STORAGE}, requestCode);
         }
     }
 

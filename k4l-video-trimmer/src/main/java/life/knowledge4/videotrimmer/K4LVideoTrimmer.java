@@ -24,13 +24,13 @@
 package life.knowledge4.videotrimmer;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Environment;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -45,9 +45,13 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import androidx.annotation.NonNull;
+
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import life.knowledge4.videotrimmer.interfaces.OnK4LVideoListener;
@@ -100,6 +104,10 @@ public class K4LVideoTrimmer extends FrameLayout {
     private boolean mResetSeekBar = true;
     private final MessageHandler mMessageHandler = new MessageHandler(this);
 
+    //handle gesture exclusion rect
+    private Rect boundingBox = new Rect();
+    private List<Rect> exclusions = new ArrayList<>(Collections.singletonList(boundingBox));
+
     public K4LVideoTrimmer(@NonNull Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
@@ -128,6 +136,17 @@ public class K4LVideoTrimmer extends FrameLayout {
         setUpMargins();
     }
 
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        if (changed) {
+            findViewById(R.id.trimmer).getGlobalVisibleRect(boundingBox);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                setSystemGestureExclusionRects(exclusions);
+            }
+        }
+    }
+
     private void setUpListeners() {
         mListeners = new ArrayList<>();
         mListeners.add(new OnProgressVideoListener() {
@@ -137,26 +156,6 @@ public class K4LVideoTrimmer extends FrameLayout {
             }
         });
         mListeners.add(mVideoProgressIndicator);
-
-        findViewById(R.id.btCancel)
-                .setOnClickListener(
-                        new OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                onCancelClicked();
-                            }
-                        }
-                );
-
-        findViewById(R.id.btSave)
-                .setOnClickListener(
-                        new OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                onSaveClicked();
-                            }
-                        }
-                );
 
         final GestureDetector gestureDetector = new
                 GestureDetector(getContext(),
@@ -173,7 +172,7 @@ public class K4LVideoTrimmer extends FrameLayout {
             @Override
             public boolean onError(MediaPlayer mediaPlayer, int what, int extra) {
                 if (mOnTrimVideoListener != null)
-                    mOnTrimVideoListener.onError("Something went wrong reason : " + what);
+                    mOnTrimVideoListener.onError(new Exception("Something went wrong reason : " + what));
                 return false;
             }
         });
@@ -292,7 +291,7 @@ public class K4LVideoTrimmer extends FrameLayout {
                             try {
                                 TrimVideoUtils.startTrim(file, getDestinationPath(), mStartPosition, mEndPosition, mOnTrimVideoListener);
                             } catch (final Throwable e) {
-                                Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
+                                mOnTrimVideoListener.onError(e);
                             }
                         }
                     }
@@ -320,17 +319,13 @@ public class K4LVideoTrimmer extends FrameLayout {
 
     private void onCancelClicked() {
         mVideoView.stopPlayback();
-        if (mOnTrimVideoListener != null) {
-            mOnTrimVideoListener.cancelAction();
-        }
     }
 
-    private String getDestinationPath() {
+    private String getDestinationPath() throws FileNotFoundException {
         if (mFinalPath == null) {
-            File folder = Environment.getExternalStorageDirectory();
-            mFinalPath = folder.getPath() + File.separator;
-            Log.d(TAG, "Using default path " + mFinalPath);
+            throw new FileNotFoundException("output path was not found");
         }
+        Log.d(TAG, "Using default path " + mFinalPath);
         return mFinalPath;
     }
 
@@ -498,6 +493,14 @@ public class K4LVideoTrimmer extends FrameLayout {
             long pos = 1000L * position / mDuration;
             mHolderTopView.setProgress((int) pos);
         }
+    }
+
+    public void save() {
+        onSaveClicked();
+    }
+
+    public void releaseTrimmer() {
+        mVideoView.stopPlayback();
     }
 
     /**

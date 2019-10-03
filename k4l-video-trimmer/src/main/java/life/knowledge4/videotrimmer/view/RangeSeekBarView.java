@@ -27,8 +27,9 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -54,6 +55,7 @@ public class RangeSeekBarView extends View {
     private float mPixelRangeMax;
     private float mScaleRangeMax;
     private boolean mFirstRun;
+    private float extraThumbPadding;
 
     private final Paint mShadow = new Paint();
     private final Paint mLine = new Paint();
@@ -74,6 +76,7 @@ public class RangeSeekBarView extends View {
 
         mScaleRangeMax = 100;
         mHeightTimeLine = getContext().getResources().getDimensionPixelOffset(R.dimen.frames_video_height);
+        extraThumbPadding = getContext().getResources().getDimension(R.dimen.extra_control_padding);
 
         setFocusable(true);
         setFocusableInTouchMode(true);
@@ -300,7 +303,7 @@ public class RangeSeekBarView extends View {
             for (int i = 0; i < mThumbs.size(); i++) {
                 // Find thumb closest to x coordinate
                 final float tcoordinate = mThumbs.get(i).getPos() + mThumbWidth;
-                if (coordinate >= mThumbs.get(i).getPos() && coordinate <= tcoordinate) {
+                if (coordinate >= mThumbs.get(i).getPos() - extraThumbPadding && coordinate <= tcoordinate + extraThumbPadding) {
                     closest = mThumbs.get(i).getIndex();
                 }
             }
